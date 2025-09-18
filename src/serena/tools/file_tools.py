@@ -30,6 +30,17 @@ class ReadFileTool(Tool):
         end_line: int | str | None = None,
         max_answer_chars: int | str = -1,
     ) -> str:
+        """
+        Reads the given file or a chunk of it. Generally, symbolic operations
+        like find_symbol or find_referencing_symbols should be preferred if you know which symbols you are looking for.
+
+        :param relative_path: the relative path to the file to read
+        :param start_line: the 1-based index of the first line to be retrieved.
+        :param end_line: the 1-based index of the last line to be retrieved (inclusive). If None, read until the end of the file.
+        :param max_answer_chars: if the file (chunk) is longer than this number of characters,
+            no content will be returned.
+        :return: the requested text of the file at the given relative path
+        """
         # --- begin: tolerate Cursor sending strings for numeric params ---
         if isinstance(start_line, str):
             _s = start_line.strip().lower()
