@@ -30,18 +30,6 @@ class ReadFileTool(Tool):
         end_line: int | str | None = None,
         max_answer_chars: int | str = -1,
     ) -> str:
-        """
-        Reads the given file or a chunk of it. Generally, symbolic operations
-        like find_symbol or find_referencing_symbols should be preferred if you know which symbols you are looking for.
-
-        :param relative_path: the relative path to the file to read
-        :param start_line: the 0-based index of the first line to be retrieved.
-        :param end_line: the 0-based index of the last line to be retrieved (inclusive). If None, read until the end of the file.
-        :param max_answer_chars: if the file (chunk) is longer than this number of characters,
-            no content will be returned. Don't adjust unless there is really no other way to get the content
-            required for the task.
-        :return: the full text of the file at the given relative path
-        """
         # --- begin: tolerate Cursor sending strings for numeric params ---
         if isinstance(start_line, str):
             _s = start_line.strip().lower()
@@ -58,6 +46,12 @@ class ReadFileTool(Tool):
             end_line = 0
         # --- end: type coercion ---
 
+        # --- normalize 1-based inputs from Cursor (to 0-based, inclusive) ---
+        if start_line is not None:
+            start_line = max(0, int(start_line) - 1)
+        if end_line is not None:
+            end_line = max(0, int(end_line) - 1)
+
         self.project.validate_relative_path(relative_path)
 
         result = self.project.read_file(relative_path)
@@ -70,8 +64,6 @@ class ReadFileTool(Tool):
         result = "\n".join(result_lines)
 
         return self._limit_length(result, max_answer_chars)
-
-
 
 
 class CreateTextFileTool(Tool, ToolMarkerCanEdit):
