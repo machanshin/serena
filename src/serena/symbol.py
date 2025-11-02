@@ -227,7 +227,7 @@ class LanguageServerSymbol(Symbol, ToStringMixin):
         start_pos = self.body_start_position
         end_pos = self.body_end_position
         start_line = start_pos["line"] if start_pos else None
-        end_line = end_pos["line"] if end_pos else None
+        end_line = (end_pos["line"] + 1) if end_pos else None
         return start_line, end_line
 
     @property
